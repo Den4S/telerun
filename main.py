@@ -78,6 +78,7 @@ pg.mixer.music.play()
 pg.mixer.music.set_volume(0.03)
 # -----------------------------------------------------------------------------------------------------------------------
 
+
 def fall(dt, y, spdy, ay):  # Процедура, просчитывающая свободное падение
     y += spdy * dt + ay * dt ** 2 / 2
     spdy += ay * dt
@@ -191,21 +192,22 @@ while not crashed:
             if game_time > best_time:  # Сохранение лучшего времени
                 best_time = game_time
     if pause:
-        pg.time.delay(delay)
         bullet_speed_add = 0
         game = False
         clock.tick()
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                pg.quit()
+                crashed = True
                 click_channel = click.play()
                 click_channel.set_volume(0.1)
-            if event.type == pg.KEYDOWN:
-                if keys[pg.K_SPACE]:
-                    pause = False
-                    game = True
-                    click_channel = click.play()
-                    click_channel.set_volume(0.1)
+
+        keys2 = pg.key.get_pressed()  # Все нажатые кнопки
+
+        if keys2[pg.K_RETURN]:
+            pause = False
+            game = True
+            click_channel = click.play()
+            click_channel.set_volume(0.1)
 
         pnt.draw_pause(win, font_small, font_normal, font_huge, game_time)
         pg.display.update()
