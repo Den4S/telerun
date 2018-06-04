@@ -22,7 +22,7 @@ def bonus_generation(win, game_time, picture, picture_1):
     global list_of_lives, list_of_vpn, n_ext, n_vpn
 
     def generation():
-        #global list_of_lives, list_of_vpn
+        # global list_of_lives, list_of_vpn
         x1 = win_w
         y1 = random.randrange(0, win_h - bonus_w)
         v_x = -bonus_speed
@@ -43,15 +43,12 @@ def bonus_generation(win, game_time, picture, picture_1):
     if (len(list_of_lives) == 0) and (len(list_of_vpn) == 0) and (game_time > t_ext * n_ext):
         n_ext = n_ext + 1
         gen_x, gen_y, gen_v_x = generation()
-        list_of_lives.append(bonuses(gen_x, gen_y, gen_v_x, bonus_w, picture))
+        list_of_lives.append(bonuses(gen_x, gen_y, gen_v_x, bonus_w / 2, picture))
 
     if (len(list_of_vpn) == 0) and (len(list_of_lives) == 0) and (game_time > t_vpn * n_vpn):
         n_vpn = n_vpn + 1
         gen_x, gen_y, gen_v_x = generation()
-        list_of_vpn.append(bonuses(gen_x, gen_y, gen_v_x, bonus_w, picture_1))
-
+        list_of_vpn.append(bonuses(gen_x, gen_y, gen_v_x, bonus_w / 2, picture_1))
 
     for bonus in list_of_lives+list_of_vpn:
         bonus.draw(win)
-
-

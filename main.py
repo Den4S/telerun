@@ -99,7 +99,7 @@ while not crashed:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 click_channel = click.play()
-                click_channel.set_volume(0.1)
+                click_channel.set_volume(0.05)
                 crashed = True
 
         pnt.draw_menu(win, font_small, font_normal, font_huge, logo, best_time)  # Рисуем меню
@@ -108,7 +108,7 @@ while not crashed:
 
         if keys[pg.K_RETURN]:  # Новая игра
             click_channel = click.play()
-            click_channel.set_volume(0.1)
+            click_channel.set_volume(0.05)
             pl_x, pl_y, = pl_x0, pl_y0
             pl_spdx, pl_spdy = pl_spdx0, pl_spdy0
             pl_lives = pl_lives0
@@ -167,21 +167,11 @@ while not crashed:
                              [pl_x + 0.21 * pl_w, pl_y + 0.75 * pl_h], [pl_x, pl_y + 0.85 * pl_h]]
             bul.bullet_generator(win, pl_x + pl_w / 2, pl_y + pl_h / 2, rkn)
 
-            for bull in bul.bullet_array:
-                if bul.crossing(polygon, bull.x, bull.y, bull.rad) and vulnerable:
-                     hit_channel = hit.play()
-                     hit_channel.set_volume(0.1)
-
-            for bonus in bon.list_of_bonuses:
-                if bul.crossing(polygon, bonus.x, bonus.y, bonus.rad):
-                     bonus_life_channel = bonus_life.play()
-                     bonus_life_channel.set_volume(0.15)
-
             game_time += clock.get_time() / 1000  # Обновление игрового времени
             pnt.print_time(win, font_small, game_time)  # Вывод времени на экран
 
-            pl_lives, vulnerable = liv.check_bonuses(pl_lives, vulnerable, polygon)
-            pl_spdy, pl_lives, vulnerable = liv.check_lives(pl_y, pl_spdy, pl_lives, vulnerable, polygon)
+            pl_lives, vulnerable = liv.check_bonuses(pl_lives, vulnerable, polygon, bonus_life)
+            pl_spdy, pl_lives, vulnerable = liv.check_lives(pl_y, pl_spdy, pl_lives, vulnerable, polygon, hit)
             bon.bonus_generation(win, game_time, extr_l, vpn)
             pnt.lives_counter(win, font_normal, pl_lives)  # Прорисовка счетчика жизней
 
@@ -201,7 +191,7 @@ while not crashed:
             if event.type == pg.QUIT:
                 crashed = True
                 click_channel = click.play()
-                click_channel.set_volume(0.1)
+                click_channel.set_volume(0.05)
 
         keys2 = pg.key.get_pressed()  # Все нажатые кнопки
 
@@ -209,7 +199,7 @@ while not crashed:
             pause = False
             game = True
             click_channel = click.play()
-            click_channel.set_volume(0.1)
+            click_channel.set_volume(0.05)
 
         pnt.draw_pause(win, font_small, font_normal, font_huge, game_time)
         pg.display.update()
@@ -230,7 +220,7 @@ while not crashed:
 
         if keys[pg.K_RETURN]:  # Новая игра
             click_channel = click.play()
-            click_channel.set_volume(0.1)
+            click_channel.set_volume(0.05)
             pl_x, pl_y, = pl_x0, pl_y0
             pl_spdx, pl_spdy = pl_spdx0, pl_spdy0
             pl_lives = pl_lives0
@@ -243,7 +233,7 @@ while not crashed:
 
         if keys[pg.K_BACKSPACE]:  # Выход в меню
             click_channel = click.play()
-            click_channel.set_volume(0.1)
+            click_channel.set_volume(0.05)
             game_over = False
             menu = True
 

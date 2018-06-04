@@ -1,20 +1,17 @@
-# Внутри этой процедуры можно использовать процедуру (даже если она ещё не написана) из bullets.py,
-# которая принимает в качестве аргумента объект типа bullet и возвращает True или False в зав-ти
-# от того попала пуля в самолётик или же нет.
-# P.S. если пуля попала в самолётик, её заодно необходимо удалить из списка bullets
-"""Процедура, которая проверяет события, влекущие за собой потерю жизней
-    Аргументы:
-    y - координата самолётика по оси Y
-    pl_spdy - скорость самолётика по оси Y
-    lives - переменная, отвечающая за количество жизней
-    vulnerable - флаг, показывающий является ли цель уязвимой в данный момент
-    bullets - массив объектов  типа bullets (пули, которые в данный момент отрисовываются на экране)"""
 from constants import *
 import bullets as bul
 import bonuses as bon
 
 
-def check_lives(y, pl_spdy, lives, vulnerable, polygon):
+def check_lives(y, pl_spdy, lives, vulnerable, polygon, hit):
+    """Процедура, которая проверяет события, влекущие за собой потерю жизней
+            Аргументы:
+            y - координата самолётика по оси Y
+            pl_spdy - скорость самолётика по оси Y
+            lives - переменная, отвечающая за количество жизней
+            vulnerable - флаг, показывающий является ли цель уязвимой в данный момент
+            polygon - многоугольник, задающий самолётик
+            hit - звук при попадании пули"""
     global t_vul, invulnerability_t
     if y > (win_h - brd) and vulnerable:
         pl_spdy = -rescue_spd
@@ -24,6 +21,8 @@ def check_lives(y, pl_spdy, lives, vulnerable, polygon):
     for bull in bul.bullet_array:
         if bul.crossing(polygon, bull.x, bull.y, bull.rad) and vulnerable:
             lives = lives - 1
+            hit_channel = hit.play()
+            hit_channel.set_volume(0.1)
             del bul.bullet_array[bul.bullet_array.index(bull)]
             vulnerable = False
             invulnerability_t = invulnerability_t_damage
@@ -38,17 +37,27 @@ def check_lives(y, pl_spdy, lives, vulnerable, polygon):
     return pl_spdy, lives, vulnerable
 
 
-def check_bonuses(lives, vulnerable, polygon):
+def check_bonuses(lives, vulnerable, polygon, bonus_life):
+    """Процедура, которая проверяет подбор бонуса
+            Аргументы:
+            lives - переменная, отвечающая за количество жизней
+            vulnerable - флаг, показывающий является ли цель уязвимой в данный момент
+            polygon - многоугольник, задающий самолётик
+            bonus_life - звук при подбирании бонуса"""
     global invulnerability_t
     for bonus in bon.list_of_lives:
-        if bul.crossing(polygon, bonus.x, bonus.y, bonus.rad) and vulnerable:
-            lives = lives + 1
+        if bul.crossing(polygon, bonus.x, bonus.y, bonus.rad):
+            if lives < 6:
+                lives = lives + 1
+            bonus_life_channel = bonus_life.play()
+            bonus_life_channel.set_volume(0.1)
             del bon.list_of_lives[bon.list_of_lives.index(bonus)]
-            vulnerable = True
 
     for bonus in bon.list_of_vpn:
-        if bul.crossing(polygon, bonus.x, bonus.y, bonus.rad) and vulnerable:
+        if bul.crossing(polygon, bonus.x, bonus.y, bonus.rad):
             vulnerable = False
+            bonus_life_channel = bonus_life.play()
+            bonus_life_channel.set_volume(0.1)
             del bon.list_of_vpn[bon.list_of_vpn.index(bonus)]
             invulnerability_t = invulnerability_t_bonus
 
