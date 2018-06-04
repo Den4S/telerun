@@ -115,6 +115,8 @@ while not crashed:
             menu = False
             game = True
             game_time = 0
+            bon.n_vpn = 1
+            bon.n_ext = 1
             clock.tick()
 
     if game:
@@ -180,7 +182,7 @@ while not crashed:
 
             pl_lives, vulnerable = liv.check_bonuses(pl_lives, vulnerable, polygon)
             pl_spdy, pl_lives, vulnerable = liv.check_lives(pl_y, pl_spdy, pl_lives, vulnerable, polygon)
-            bon.bonus_generation(win, game_time, extr_l)
+            bon.bonus_generation(win, game_time, extr_l, vpn)
             pnt.lives_counter(win, font_normal, pl_lives)  # Прорисовка счетчика жизней
 
             pnt.draw_plane(win, pl_x, pl_y, plane, plane_dmg, vulnerable)
@@ -215,7 +217,8 @@ while not crashed:
     if game_over:
         bul.speed_counter = 0
         bul.bullet_array = []
-        bon.list_of_bonuses = []
+        bon.list_of_lives = []
+        bon.list_of_vpn = []
         pg.time.delay(delay)
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -234,6 +237,8 @@ while not crashed:
             game_over = False
             game = True
             game_time = 0
+            bon.n_vpn = 1
+            bon.n_ext = 1
             clock.tick()
 
         if keys[pg.K_BACKSPACE]:  # Выход в меню
