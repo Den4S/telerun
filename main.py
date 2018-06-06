@@ -92,7 +92,6 @@ while not crashed:
     else:
         counter_cloud += 1
 
-
     if menu:
         pg.time.delay(delay)
         for event in pg.event.get():
@@ -119,7 +118,7 @@ while not crashed:
             clock.tick()
 
     if game:
-        if pl_lives:
+        if pl_lives > 0:
             clock.tick()
             bul.speed_counter += 1
             pg.time.delay(delay)
@@ -185,7 +184,6 @@ while not crashed:
                 best_time = game_time
     if pause:
         pg.time.delay(delay)
-        bullet_speed_add = 0
         game = False
         clock.tick()
         for event in pg.event.get():
@@ -206,6 +204,7 @@ while not crashed:
         pg.display.update()
 
     if game_over:
+        vulnerable = True
         bul.speed_counter = 0
         bul.bullet_array = []
         bon.list_of_lives = []
