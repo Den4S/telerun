@@ -56,8 +56,9 @@ pl_y = midle_y
 
 vulnerable = True  # Флаг, показывающий является ли цель уязвимой в данный момент
 
+best_result = open('best_result.txt', 'r+')
 game_time = 0  # Счётчик текущего времени игры
-best_time = 0  # Тут храниться лучшее время за сессию
+best_time = float(best_result.readline()) # Тут храниться лучшее время на данном устройстве
 
 counter_cloud = cld_border_shift
 
@@ -182,6 +183,9 @@ while not crashed:
             game_over = True
             if game_time > best_time:  # Сохранение лучшего времени
                 best_time = game_time
+                best_result.seek(0)
+                best_result.truncate()
+                best_result.write(str(round(best_time, 2)))
     if pause:
         pg.time.delay(delay)
         game = False
@@ -237,7 +241,7 @@ while not crashed:
             game_over = False
             menu = True
 
-
+best_result.close()
 pg.quit()  # Завершение программы
 quit()
 
