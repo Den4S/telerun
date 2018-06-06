@@ -74,7 +74,7 @@ bonus_life = pg.mixer.Sound('telerun_bonus_life.ogg')
 music = pg.mixer.music.load('telerun_theme.ogg')
 up = pg.mixer.Sound('telerun_up.ogg')
 click = pg.mixer.Sound('telerun_click.ogg')
-pg.mixer.music.play()
+pg.mixer.music.play(-1)
 pg.mixer.music.set_volume(0.03)
 # -----------------------------------------------------------------------------------------------------------------------
 
@@ -91,8 +91,7 @@ while not crashed:
         counter_cloud = 0
     else:
         counter_cloud += 1
-        
-    bul.speed_counter += 1
+
 
     if menu:
         pg.time.delay(delay)
@@ -122,8 +121,9 @@ while not crashed:
     if game:
         if pl_lives:
             clock.tick()
-
+            bul.speed_counter += 1
             pg.time.delay(delay)
+
             for event in pg.event.get():  # Проверка на выход из игры
                 if event.type == pg.QUIT:
                     crashed = True
@@ -184,6 +184,7 @@ while not crashed:
             if game_time > best_time:  # Сохранение лучшего времени
                 best_time = game_time
     if pause:
+        pg.time.delay(delay)
         bullet_speed_add = 0
         game = False
         clock.tick()
