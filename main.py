@@ -17,7 +17,7 @@ font_normal = pg.font.Font('cornerstone.ttf', int(48 * scaling))
 font_small = pg.font.Font('cornerstone.ttf', int(36 * scaling))
 
 logo = pg.image.load("logo_tr.png").convert_alpha()  # Подгружаем картинки и изменяем их размер для отрисовки
-logo = pg.transform.smoothscale(logo, (int(258 * scaling), int(192 * scaling)))
+logo = pg.transform.smoothscale(logo, (int(192 * scaling), int(192 * scaling)))
 plane = pg.image.load("plane.png").convert_alpha()
 plane = pg.transform.smoothscale(plane, (int(pl_w * scaling), int(pl_h * scaling)))
 plane_dmg = pg.image.load("plane_dmg.png").convert_alpha()
@@ -56,11 +56,8 @@ pl_y = midle_y
 
 vulnerable = True  # Флаг, показывающий является ли цель уязвимой в данный момент
 
-best_result = open('best_result.txt', 'r+')  # Файл с лучшим временем
-
-
 game_time = 0  # Счётчик текущего времени игры
-best_time = float(best_result.readline()) # Тут храниться лучшее время на данном устройстве
+best_time = 0  # Тут храниться лучшее время за сессию
 
 counter_cloud = cld_border_shift
 
@@ -186,10 +183,6 @@ while not crashed:
             game_over = True
             if game_time > best_time:  # Сохранение лучшего времени
                 best_time = game_time
-                best_result.seek(0)
-                best_result.truncate()
-                best_result.write(str(round(best_time, 2)))
-
     if pause:
         bullet_speed_add = 0
         game = False
@@ -244,7 +237,7 @@ while not crashed:
             game_over = False
             menu = True
 
-best_result.close()
+
 pg.quit()  # Завершение программы
 quit()
 
