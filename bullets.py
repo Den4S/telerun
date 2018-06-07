@@ -33,10 +33,10 @@ def bullet_generator(win, x, y, bullet_picture):
             shot.x = shot.x + shot.v_x
             shot.y = shot.y + shot.v_y
 
-    if speed_counter < 5000:
+    if speed_counter < speed_counter_lim:
         bullet_speed = bullet_speed_init + bullet_speed_add * (speed_counter // 500)
-    else:
-        bullet_speed = bullet_speed_init + bullet_speed_add * 11
+        if speed_counter == speed_counter_lim - 1:
+            bullet_speed = bullet_speed_init + bullet_speed_add * 11
 
     if len(bullet_array) == 0:
         new_born_x = random.randrange(0, win_w, 5)
