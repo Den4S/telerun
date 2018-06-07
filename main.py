@@ -17,7 +17,7 @@ font_normal = pg.font.Font('cornerstone.ttf', int(48 * scaling))
 font_small = pg.font.Font('cornerstone.ttf', int(36 * scaling))
 
 logo = pg.image.load("logo_tr.png").convert_alpha()  # Подгружаем картинки и изменяем их размер для отрисовки
-logo = pg.transform.smoothscale(logo, (int(258 * scaling), int(192 * scaling)))
+logo = pg.transform.smoothscale(logo, (int(192 * scaling), int(192 * scaling)))
 plane = pg.image.load("plane.png").convert_alpha()
 plane = pg.transform.smoothscale(plane, (int(pl_w * scaling), int(pl_h * scaling)))
 plane_dmg = pg.image.load("plane_dmg.png").convert_alpha()
@@ -56,8 +56,9 @@ pl_y = midle_y
 
 vulnerable = True  # Флаг, показывающий является ли цель уязвимой в данный момент
 
+best_result = open('best_result.txt', 'r+')
 game_time = 0  # Счётчик текущего времени игры
-best_time = 0  # Тут храниться лучшее время за сессию
+best_time = float(best_result.readline()) # Тут храниться лучшее время на данном устройстве
 
 counter_cloud = cld_border_shift
 
@@ -66,7 +67,18 @@ crashed = False  # Флаг для проверки закрывания про�
 menu = True  # Флаг, показывающий, что игрк находится (не находится) в меню
 game_over = False  # Флаг, показывающий, что игрк играет (не играет)
 game = False  # Флаг, показывающий, что игрк видит (не видит) окно GAME OVER
+pause = False
 # ----------------------------------------------------------------------------------------------------------------------
+# Прогружаем звуки для игры
+hit = pg.mixer.Sound('telerun_hit.ogg')
+bonus_life = pg.mixer.Sound('telerun_bonus_life.ogg')
+music = pg.mixer.music.load('telerun_theme.ogg')
+up = pg.mixer.Sound('telerun_up.ogg')
+click = pg.mixer.Sound('telerun_click.ogg')
+pg.mixer.music.play(-1)
+pg.mixer.music.set_volume(0.03)
+# -----------------------------------------------------------------------------------------------------------------------
+
 
 def fall(dt, y, spdy, ay):  # Процедура, просчитывающая свободное падение
     y += spdy * dt + ay * dt ** 2 / 2
@@ -80,13 +92,13 @@ while not crashed:
         counter_cloud = 0
     else:
         counter_cloud += 1
-        
-    bul.speed_counter += 1
 
     if menu:
         pg.time.delay(delay)
         for event in pg.event.get():
             if event.type == pg.QUIT:
+                click_channel = click.play()
+                click_channel.set_volume(0.05)
                 crashed = True
 
         pnt.draw_menu(win, font_small, font_normal, font_huge, logo, best_time)  # Рисуем меню
@@ -94,24 +106,36 @@ while not crashed:
         keys = pg.key.get_pressed()  # Все нажатые кнопки
 
         if keys[pg.K_RETURN]:  # Новая игра
+            click_channel = click.play()
+            click_channel.set_volume(0.05)
             pl_x, pl_y, = pl_x0, pl_y0
             pl_spdx, pl_spdy = pl_spdx0, pl_spdy0
             pl_lives = pl_lives0
             menu = False
             game = True
             game_time = 0
+            bon.n_vpn = 1
+            bon.n_ext = 1
             clock.tick()
 
     if game:
-        if pl_lives:
+        if pl_lives > 0:
             clock.tick()
-
+            bul.speed_counter += 1
             pg.time.delay(delay)
+
             for event in pg.event.get():  # Проверка на выход из игры
                 if event.type == pg.QUIT:
                     crashed = True
+                    click_channel = click.play()
+                    click_channel.set_volume(0.1)
 
             keys = pg.key.get_pressed()  # Все нажатые кнопки
+
+            if keys[pg.K_SPACE]:
+                pause = True
+                click_channel = click.play()
+                click_channel.set_volume(0.1)
 
             if keys[pg.K_RIGHT] and (win_w - pl_x >= pl_w + brd):  # Движение вправо
                 pl_x += pl_spdx*t
@@ -134,6 +158,10 @@ while not crashed:
             if pl_y <= brd:  # Ограничение сверху
                 pl_y = brd
 
+            if pl_y >= win_h - brd:
+                up_channel = up.play()
+                up_channel.set_volume(0.1)
+
             polygon = [[pl_x + 0.21 * pl_w, pl_y + 0.32 * pl_h], [pl_x + 0.19 * pl_w, pl_y],
                              [pl_x + pl_w, pl_y + 0.32 * pl_h], [pl_x + 0.21 * pl_w, pl_y + pl_h],
                              [pl_x + 0.21 * pl_w, pl_y + 0.75 * pl_h], [pl_x, pl_y + 0.85 * pl_h]]
@@ -142,9 +170,9 @@ while not crashed:
             game_time += clock.get_time() / 1000  # Обновление игрового времени
             pnt.print_time(win, font_small, game_time)  # Вывод времени на экран
 
-            pl_lives, vulnerable = liv.check_bonuses(pl_lives, vulnerable, polygon)
-            pl_spdy, pl_lives, vulnerable = liv.check_lives(pl_y, pl_spdy, pl_lives, vulnerable, polygon)
-            bon.bonus_generation(win, game_time, extr_l)
+            pl_lives, vulnerable = liv.check_bonuses(pl_lives, vulnerable, polygon, bonus_life)
+            pl_spdy, pl_lives, vulnerable = liv.check_lives(pl_y, pl_spdy, pl_lives, vulnerable, polygon, hit)
+            bon.bonus_generation(win, game_time, extr_l, vpn)
             pnt.lives_counter(win, font_normal, pl_lives)  # Прорисовка счетчика жизней
 
             pnt.draw_plane(win, pl_x, pl_y, plane, plane_dmg, vulnerable)
@@ -155,11 +183,36 @@ while not crashed:
             game_over = True
             if game_time > best_time:  # Сохранение лучшего времени
                 best_time = game_time
+                best_result.seek(0)
+                best_result.truncate()
+                best_result.write(str(round(best_time, 2)))
+    if pause:
+        pg.time.delay(delay)
+        game = False
+        clock.tick()
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                crashed = True
+                click_channel = click.play()
+                click_channel.set_volume(0.05)
+
+        keys2 = pg.key.get_pressed()  # Все нажатые кнопки
+
+        if keys2[pg.K_RETURN]:
+            pause = False
+            game = True
+            click_channel = click.play()
+            click_channel.set_volume(0.05)
+
+        pnt.draw_pause(win, font_small, font_normal, font_huge, game_time)
+        pg.display.update()
 
     if game_over:
+        vulnerable = True
         bul.speed_counter = 0
         bul.bullet_array = []
-        bon.list_of_bonuses = []
+        bon.list_of_lives = []
+        bon.list_of_vpn = []
         pg.time.delay(delay)
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -170,19 +223,25 @@ while not crashed:
         keys = pg.key.get_pressed()
 
         if keys[pg.K_RETURN]:  # Новая игра
+            click_channel = click.play()
+            click_channel.set_volume(0.05)
             pl_x, pl_y, = pl_x0, pl_y0
             pl_spdx, pl_spdy = pl_spdx0, pl_spdy0
             pl_lives = pl_lives0
             game_over = False
             game = True
             game_time = 0
+            bon.n_vpn = 1
+            bon.n_ext = 1
             clock.tick()
 
         if keys[pg.K_BACKSPACE]:  # Выход в меню
+            click_channel = click.play()
+            click_channel.set_volume(0.05)
             game_over = False
             menu = True
 
-
+best_result.close()
 pg.quit()  # Завершение программы
 quit()
 

@@ -67,7 +67,7 @@ def draw_pause(win, font_small, font_normal, font_huge, game_time):
     yres_rec.center = (win_w / 2, win_h / 3 + 100 * scaling)
     win.blit(yres_txt, yres_rec)
 
-    res_txt = font_small.render('RESUME: SPACE', True, (0, 137, 204))
+    res_txt = font_small.render('RESUME: ENTER', True, (0, 137, 204))
     res_rec = res_txt.get_rect()
     res_rec.center = (win_w / 2, 2 * win_h / 3 + 50 * scaling)
     win.blit(res_txt, res_rec)

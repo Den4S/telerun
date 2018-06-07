@@ -7,7 +7,7 @@ speed_counter = 0  # Constant for changing the bullet speed
 
 
 class bullet():
-    '''An object, which has several parameters and can bw drawn'''
+    """An object, which has several parameters and can bw drawn"""
     def __init__(self, x, y, v_x, v_y, rad, picture):
         self.x = x
         self.y = y
@@ -21,7 +21,7 @@ class bullet():
 
 
 def bullet_generator(win, x, y, bullet_picture):
-    '''Draws bullets in there current position and draws new ones in necessary'''
+    """Draws bullets in there current position and draws new ones in necessary"""
     global bullet_array
     global speed_counter
     edge = bull_w / 2
@@ -57,13 +57,13 @@ def bullet_generator(win, x, y, bullet_picture):
 
 
 def distance(x_p, y_p, x_l, y_l, c_l):
-    '''Return the distance between the point (x_p, y_p) and the line x_l * x + y_l * y + c_l = 0'''
+    """Return the distance between the point (x_p, y_p) and the line x_l * x + y_l * y + c_l = 0"""
     return abs(x_l * x_p + y_l * y_p + c_l) / (x_l ** 2 + y_l ** 2) ** 0.5
 
 
 def straight(first_point, second_point):
-    '''Return A, B, С from straight line Ax + Bx + С = 0 equation, which includes
-    points first_point and second_point'''
+    """Return A, B, С from straight line Ax + Bx + С = 0 equation, which includes
+    points first_point and second_point"""
     if first_point[0] == second_point[0]:
         return [1, 0, -first_point[0]]
     elif first_point[1] == second_point[1]:
@@ -74,7 +74,7 @@ def straight(first_point, second_point):
 
 
 def projection(x_p, y_p, alfa):
-    '''Return coordinates of point M (x_p, y_p) projection onto line alfa'''
+    """Return coordinates of point M (x_p, y_p) projection onto line alfa"""
     if alfa[0] == 0:
         return [x_p, - alfa[2] / alfa[1]]
     elif alfa[1] == 0:
@@ -86,8 +86,8 @@ def projection(x_p, y_p, alfa):
 
 def one_crossing(first_point, second_point, x_p, y_p, r):
     # first_point, second_point - arrays of 2 elements, which are coordinates of segment's ends
-    '''Return True if segment first_point, second_point crosses the circle with the center in (x_p, y_p)
-    and radius r, False if not'''
+    """Return True if segment first_point, second_point crosses the circle with the center in (x_p, y_p)
+    and radius r, False if not"""
     st = straight(first_point, second_point)
     if ((x_p - first_point[0]) ** 2 + (y_p - first_point[1]) ** 2) ** 0.5 <= r:
         return True
@@ -103,7 +103,7 @@ def one_crossing(first_point, second_point, x_p, y_p, r):
 
 def crossing(polygon_vertexes, x_p, y_p, r):
     # polygon_vertexes - array of arrays, including both coordinates of every polygon vertex
-    '''Return true if there are any crossings, no if not'''
+    """Return true if there are any crossings, no if not"""
     for i in range(len(polygon_vertexes)):
         if one_crossing(polygon_vertexes[i - 1], polygon_vertexes[i], x_p, y_p, r):
             return True
