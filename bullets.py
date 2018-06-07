@@ -4,7 +4,7 @@ import random
 
 bullet_array = []
 speed_counter = 0  # Constant for changing the bullet speed
-
+bullet_speed = bullet_speed_init
 
 class bullet():
     """An object, which has several parameters and can bw drawn"""
@@ -24,6 +24,7 @@ def bullet_generator(win, x, y, bullet_picture):
     """Draws bullets in there current position and draws new ones in necessary"""
     global bullet_array
     global speed_counter
+    global bullet_speed
     edge = bull_w / 2
 
     for shot in bullet_array:
