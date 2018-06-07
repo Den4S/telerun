@@ -150,7 +150,7 @@ while not crashed:
                 if keys[pg.K_UP] and (pl_y > brd):  # Движение вверх
                     pl_y, pl_spdy = fall(t, pl_y, spd_up, pl_g)
 
-                if pl_y < pl_h/2 + brd:   # Выход за границы по высоте
+                if pl_y < brd:   # Выход за границы по высоте
                     pl_spdy = 0
 
                 if keys[pg.K_DOWN]:  # Движение вниз
