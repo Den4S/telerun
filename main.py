@@ -185,7 +185,7 @@ while not crashed:
                 best_time = game_time
                 best_result.seek(0)
                 best_result.truncate()
-                best_result.write(str(round(best_time, 2)))
+                best_result.write(str(round(best_time, 2))+'\n')
     if pause:
         pg.time.delay(delay)
         game = False
