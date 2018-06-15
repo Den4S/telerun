@@ -27,7 +27,7 @@ def draw_go(win, font_small, font_normal, font_huge, game_time, best_time):
             font_small, font_normal, font_hugу - соотв. шрифты из main
             game_time - время завершенной игры
             best_time - лучшее время за сессию"""
-    go_txt = font_huge.render('GAME OVER', True, (0, 137, 204))
+    go_txt = font_huge.render('CONNECTION LOST', True, (0, 137, 204))
     go_rec = go_txt.get_rect()
     go_rec.center = (win_w / 2, win_h / 3)
     win.blit(go_txt, go_rec)
@@ -41,14 +41,21 @@ def draw_go(win, font_small, font_normal, font_huge, game_time, best_time):
     win.blit(yres_txt, yres_rec)
     win.blit(bestres_txt, bestres_rec)
 
-    rest_txt = font_small.render('RESTART: ENTER', True, (0, 137, 204))
+    rest_txt = font_small.render('PRESS ENTER TO RECONNECT', True, (0, 137, 204))
     rest_rec = rest_txt.get_rect()
     rest_rec.center = (win_w / 2, 2 * win_h / 3 + 50 * scaling)
-    back_txt = font_small.render('MAIN MENU: BACKSPACE', True, (0, 137, 204))
-    back_rec = back_txt.get_rect()
-    back_rec.center = (win_w / 2, 2 * win_h / 3 + 90 * scaling)
+
+    back_txt1 = font_small.render('PRESS BACKSPACE', True, (0, 137, 204))
+    back_rec1 = back_txt1.get_rect()
+    back_rec1.center = (win_w / 2, 2 * win_h / 3 + 110 * scaling)
+
+    back_txt2 = font_small.render('TO RETURN TO THE MAIN MENU', True, (0, 137, 204))
+    back_rec2 = back_txt2.get_rect()
+    back_rec2.center = (win_w / 2, 2 * win_h / 3 + 150 * scaling)
+
     win.blit(rest_txt, rest_rec)
-    win.blit(back_txt, back_rec)
+    win.blit(back_txt1, back_rec1)
+    win.blit(back_txt2, back_rec2)
 
 
 def draw_pause(win, font_small, font_normal, font_huge, game_time):
@@ -67,7 +74,7 @@ def draw_pause(win, font_small, font_normal, font_huge, game_time):
     yres_rec.center = (win_w / 2, win_h / 3 + 100 * scaling)
     win.blit(yres_txt, yres_rec)
 
-    res_txt = font_small.render('RESUME: ENTER', True, (0, 137, 204))
+    res_txt = font_small.render('PRESS ENTER TO RESUME...', True, (0, 137, 204))
     res_rec = res_txt.get_rect()
     res_rec.center = (win_w / 2, 2 * win_h / 3 + 50 * scaling)
     win.blit(res_txt, res_rec)
