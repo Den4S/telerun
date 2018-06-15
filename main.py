@@ -12,9 +12,9 @@ pg.display.set_caption("TELERUN")  # Название, которое будет
 clock = pg.time.Clock()  # Штуковина для отсчета всяких времён
 
 # Подгружаем всякие картинки для отрисовки -----------------------------------------------------------------------------
-font_huge = pg.font.Font('cornerstone.ttf', int(72 * scaling))
-font_normal = pg.font.Font('cornerstone.ttf', int(48 * scaling))
-font_small = pg.font.Font('cornerstone.ttf', int(36 * scaling))
+font_huge = pg.font.Font('Cornerstone.ttf', int(72 * scaling))
+font_normal = pg.font.Font('Cornerstone.ttf', int(48 * scaling))
+font_small = pg.font.Font('Cornerstone.ttf', int(36 * scaling))
 
 logo = pg.image.load("logo_tr.png").convert_alpha()  # Подгружаем картинки и изменяем их размер для отрисовки
 logo = pg.transform.smoothscale(logo, (int(192 * scaling), int(192 * scaling)))
